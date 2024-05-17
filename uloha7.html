@@ -1,0 +1,71 @@
+<script>
+  class Kostka {
+    hod() {
+      return Math.floor(Math.random() * 6) + 1;
+    }
+  }
+
+  class Hrac {
+    constructor(jmeno) {
+      this.jmeno = jmeno;
+      this.skore = 0;
+    }
+
+    hodKostkami() {
+      const kostka1 = new Kostka();
+      const kostka2 = new Kostka();
+      const hod1 = kostka1.hod();
+      const hod2 = kostka2.hod();
+
+      if (hod1 === 1 && hod2 === 1) {
+        this.skore = 0;
+        console.log(`${this.jmeno} hodil dvě jedničky! Ztrácí všechny body.`);
+        return false;
+      } else if (hod1 === 1 || hod2 === 1) {
+        console.log(`${this.jmeno} hodil jedničku. Konec tahu.`);
+        return false;
+      } else {
+        this.skore += hod1 + hod2;
+        console.log(
+          `${this.jmeno} hodil ${hod1} a ${hod2}. Celkové skóre: ${this.skore}`
+        );
+        return true;
+      }
+    }
+  }
+
+  class Hra {
+    constructor(pocetHracu, vitezneSkore) {
+      this.hraci = [];
+      this.vitezneSkore = vitezneSkore;
+      this.aktualniHracIndex = 0;
+
+      for (let i = 0; i < pocetHracu; i++) {
+        const jmeno = prompt(`Zadejte jméno hráče ${i + 1}:`);
+        this.hraci.push(new Hrac(jmeno));
+      }
+    }
+
+    hraj() {
+      while (true) {
+        const aktualniHrac = this.hraci[this.aktualniHracIndex];
+        console.log(`\nNa tahu je ${aktualniHrac.jmeno}`);
+
+        while (aktualniHrac.hodKostkami()) {}
+
+        if (aktualniHrac.skore >= this.vitezneSkore) {
+          console.log(`\n${aktualniHrac.jmeno} vyhrává!`);
+          return;
+        }
+
+        this.aktualniHracIndex =
+          (this.aktualniHracIndex + 1) % this.hraci.length;
+      }
+    }
+  }
+
+  const pocetHracu = parseInt(prompt("Zadejte počet hráčů (2-5):"));
+  const vitezneSkore = parseInt(prompt("Zadejte vítězné skóre:"));
+  const hra = new Hra(pocetHracu, vitezneSkore);
+  hra.hraj();
+</script>
